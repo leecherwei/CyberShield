@@ -4,19 +4,20 @@ namespace App\Services;
 
 /**
  * Class SecurityManager
- * Integrates OWASP Secure Coding Practices into Module 3.1 (User & Profile Management).
+ * Integrates OWASP Secure Coding Practices into Module 3.1 (User & Profile Management) - WORAWICH.
  */
-class SecurityManager {
-
+class SecurityManager
+{
     // =========================================================================
     // MANDATORY GLOBAL PRACTICE: Input Validation 
     // =========================================================================
-    
+
     /**
      * Task 2.1 - Mandatory Input Validation Rule 1
      * Validates Organisation Registration / SSM Number format (e.g., 202301000123 or 123456-X).
      */
-    public static function validateFieldOne($data) {
+    public static function validateFieldOne($data): bool
+    {
         if (empty($data)) {
             return false;
         }
@@ -28,7 +29,8 @@ class SecurityManager {
      * Task 2.2 - Mandatory Input Validation Rule 2
      * Validates file mime-type and extension strictly for uploaded verification documents.
      */
-    public static function validateFieldTwo($data) {
+    public static function validateFieldTwo(array $data): bool
+    {
         if (!isset($data['extension']) || !isset($data['mime'])) {
             return false;
         }
@@ -42,16 +44,16 @@ class SecurityManager {
         return $extValid && $mimeValid;
     }
 
-
     // =========================================================================
     // ASSIGNMENT MITIGATION LAYER: Threat 1 (Broken Access Control - A01:2021)
     // =========================================================================
-    
+
     /**
      * Task 2.3 - Mitigation Strategy for Threat 1: IDOR / Broken Access Control
      * Verifies that the authenticated user owns the target organisation profile before allowing edits.
      */
-    public static function handleMitigationOne($param) {
+    public static function handleMitigationOne($param): bool
+    {
         $authenticatedUser = auth()->user();
 
         if (!$authenticatedUser) {
@@ -63,27 +65,25 @@ class SecurityManager {
             return true;
         }
 
-        // Verify Organisation Ownership (Strict Strict IDOR Guard)
+        // Verify Organisation Ownership (Strict IDOR Guard)
         $targetOrganisationId = (int) $param;
         return (int) $authenticatedUser->organisation_id === $targetOrganisationId;
     }
 
-
     // =========================================================================
     // ASSIGNMENT MITIGATION LAYER: Threat 2 (Cryptographic Failures - A02:2021)
     // =========================================================================
-    
+
     /**
      * Task 2.4 - Mitigation Strategy for Threat 2: Weak Passwords / Storage
      * Enforces high-entropy password requirements and secure hashing verification.
      */
-    public static function handleMitigationTwo($param) {
+    public static function handleMitigationTwo($param): bool
+    {
         $password = (string) $param;
 
         // Minimum 8 characters, at least 1 uppercase, 1 lowercase, 1 number, and 1 special char
         $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
-
         return (bool) preg_match($regex, $password);
     }
 }
-?>
