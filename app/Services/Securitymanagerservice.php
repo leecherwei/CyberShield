@@ -74,7 +74,7 @@ class SecurityManagerService
     {
         $safe = [];
 
-        foreach ($record as $field => $valie){
+        foreach ($record as $field => $value){
             if (!is_string($value)){
                 $safe[$field] = $value;
                 continue;
@@ -156,7 +156,7 @@ class SecurityManagerService
             switch ($action){
 
             case 'search_projects':
-                $safeKeyword = $this-> excapeLikeWildcards($data['keyword'] ?? '');
+                $safeKeyword = $this->escapeLikeWildcards($data['keyword'] ?? '');
 
                 return Project::query()
                         ->where('title', 'like', '%' . $safeKeyword . '%')
@@ -166,11 +166,13 @@ class SecurityManagerService
 
             
             case 'post_project':
-                $project = Project::crate([
-                    'title'  => $this->sanitizeInput($data['title']),
-                    'description' => $this->sanitizeInput($data['description']),
-                    'organisation_id'  => (int) $data['organisation_id'],
-                    'created_by'  => (int) $data['user_id'],
+                $project = Project::create([
+                        'title'           => $this->sanitizeInput($data['title']),
+                        'description'     => $this->sanitizeInput($data['description']),
+                        'industry'        => $data['industry'] ?? null,
+                        'location'        => $data['location'] ?? null,
+                        'organisation_id' => (int) $data['organisation_id'],
+                        'created_by'      => (int) $data['user_id'],
                 ]);      
                 
                 // Observer pattern hook
@@ -187,7 +189,7 @@ class SecurityManagerService
                 case 'submit_partnership_request';
                 // Explicit entity-level creation, per requirement:
                 // "handle the creation of PartnershipRequest when an
-                // organisation expresses interest in a project."
+                // organisation expresses interest in a project." 
                 $partnershipRequest = PartnershipRequest::expressInterest(
                     (int) $data['project_id'],
                     (int) $data['organisation_id'],
@@ -221,7 +223,7 @@ class SecurityManagerService
      * alone prevents injection, but NOT wildcard-widening abuse).
      */
 
-    private function escapeLikeWildards (string $term): string
+    private function escapeLikeWildcards (string $term): string
     {
         return str_replace (['%','_'],['\%','\_'], $term);
     }

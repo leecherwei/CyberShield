@@ -35,5 +35,36 @@ class Project extends Model
         'updated_at' => 'datetime',
     ];
 
+    //Status constants - mirrors module outlines listing states
+    public const STATUS_DRAFT ='draft';
+    public const STATUS_Published ='published';
+    public const STATUS_CLOSED ='closed';
+    public const STATUS_ARCHIVED ='archived';
+
+    /**
+     * The organisation that post this project
+     */
+    public function organisation()
+    {
+        return $this->belongsTo(Organisation::class);
+    }
+
+    /**
+     * The user that created this project listing
+     */
+    public function creator()
+    {
+        return $this->belongTo(User::class, 'created_by');
+    }
+
+    /**
+     * All partnership request (expressions of interest) submitted
+     * against this project
+     */
+
+    public function partnershipRequests()
+    {
+        return $this->hasMany(PartnershipRequest::class);
+    }
     
 }
