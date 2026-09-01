@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
 
 
+
+
 class SecurityManagerService
 {
     // =========================================================================
@@ -186,7 +188,7 @@ class SecurityManagerService
 
                 return $project;
 
-                case 'submit_partnership_request';
+            case 'submit_partnership_request';
                 // Explicit entity-level creation, per requirement:
                 // "handle the creation of PartnershipRequest when an
                 // organisation expresses interest in a project." 
@@ -225,7 +227,7 @@ class SecurityManagerService
 
     private function escapeLikeWildcards (string $term): string
     {
-        return str_replace (['%','_'],['\%','\_'], $term);
+        return str_replace(['%','_'],['\%','\_'], $term);
     }
 
     /*
@@ -233,7 +235,7 @@ class SecurityManagerService
      * parameters (driver-level), for cases Eloquent doesnt cover. 
      */    
 
-    public function searchProjectRaw(string $keyword, int $orgainsationId)
+    public function searchProjectsRaw(string $keyword, int $orgainsationId)
     {
         $safeKeyword = $this->escapeLikeWildcards($keyword);
 

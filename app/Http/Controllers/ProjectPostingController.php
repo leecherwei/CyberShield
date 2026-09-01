@@ -30,10 +30,9 @@ class ProjectPostingController extends Controller
 
     public function index(Request $request)
     {
-        $project = $this->securityManager-> handleMitigationTwo('search_projects', [
-            'keyword'         => $request->input('keyword',''),
+       $projects = $this->securityManager->handleMitigationTwo('search_projects', [
+            'keyword'         => $request->input('keyword', ''),
             'organisation_id' => (int) $request->input('organisation_id', Auth::user()->organisation_id),
-
         ]);
 
         return view('projects.index', compact('projects'));
@@ -75,6 +74,18 @@ class ProjectPostingController extends Controller
              ->with('success', 'Project posted successfully.'); 
 
     }
+
+    /**
+     * Get /projects/{project}
+     * Show the project details page
+     */
+    public function show(Project $project)
+    {
+        return view('projects.show', compact('project'));
+    }
+
+
+
 
     /**
      * Get /projects/{project}/edit

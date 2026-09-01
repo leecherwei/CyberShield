@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrganisationVerificationController;
+use App\Http\Controllers\ProjectPostingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/organisation/verify', [OrganisationVerificationController::class, 'store'])
         ->name('organisation.verification.store');
+
+    // Module: Project & Partnership Posting Routes
+    Route::get('/projects', [ProjectPostingController::class, 'index'])
+        ->name('projects.index');
+ 
+    Route::get('/projects/create', [ProjectPostingController::class, 'create'])
+        ->name('projects.create');
+ 
+    Route::post('/projects', [ProjectPostingController::class, 'store'])
+        ->name('projects.store');
+ 
+    Route::get('/projects/{project}', [ProjectPostingController::class, 'show'])
+        ->name('projects.show');
+ 
+    Route::get('/projects/{project}/edit', [ProjectPostingController::class, 'edit'])
+        ->name('projects.edit');
+ 
+    Route::put('/projects/{project}', [ProjectPostingController::class, 'update'])
+        ->name('projects.update');
+ 
+    Route::delete('/projects/{project}', [ProjectPostingController::class, 'destroy'])
+        ->name('projects.destroy');
+ 
+    Route::patch('/projects/{project}/status', [ProjectPostingController::class, 'updateStatus'])
+        ->name('projects.updateStatus');
+
 });
 
 require __DIR__ . '/auth.php';
