@@ -4,10 +4,10 @@ namespace App\Services;
  
 use App\Models\Project;
 use App\Models\PartnershipRequest;
-use App\Observers\AuditLogObserver;
-use App\Observers\NewProjectNotificationObserver;
+use App\Factories\AuditLogObserver;
+use App\Factories\NewProjectNotificationObserver;
 use App\Services\NotificationService;
-use App\Support\ProjectPostingSubject;
+use App\Factories\ProjectPostingSubject;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
@@ -162,6 +162,12 @@ class SecurityManagerService
 
                 return Project::query()
                         ->where('title', 'like', '%' . $safeKeyword . '%')
+                        ->when($data['industry'] ?? '', fn ($query, $industry) =>
+                            $query->where('industry', $industry)
+                        )
+                        ->when($data['location'] ?? '', fn ($query, $location) =>
+                            $query->where('location', 'like', '%' . $this->escapeLikeWildcards($location) . '%')
+                        )
                         ->where('organisation_id', '=', (int) $data['organisation_id'])
                         ->orderByDesc('created_at')
                         ->get();
@@ -188,7 +194,7 @@ class SecurityManagerService
 
                 return $project;
 
-            case 'submit_partnership_request';
+            case 'submit_partnership_request':
                 // Explicit entity-level creation, per requirement:
                 // "handle the creation of PartnershipRequest when an
                 // organisation expresses interest in a project." 
@@ -202,7 +208,7 @@ class SecurityManagerService
                 // triggers notifications for new posting AND partership
                 // interest only - routed through the shared service so 
                 // the logic isnt duplicated elsewhere in the system.
-                (new NotificationService())-> notifyPartnershipInterest($partnershipRequest);
+                (new NotificationService())->notifyPartnershipInterest($partnershipRequest);
 
                 return $partnershipRequest;
 
@@ -235,7 +241,7 @@ class SecurityManagerService
      * parameters (driver-level), for cases Eloquent doesnt cover. 
      */    
 
-    public function searchProjectsRaw(string $keyword, int $orgainsationId)
+    public function searchProjectsRaw(string $keyword, int $organisationId)
     {
         $safeKeyword = $this->escapeLikeWildcards($keyword);
 

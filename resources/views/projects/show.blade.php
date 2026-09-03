@@ -18,6 +18,7 @@
 
     @if (auth()->user()->organisation_id === $project->organisation_id)
         <a href="{{ route('projects.edit', $project) }}">Edit Project</a>
+        <a href="{{ route('partnership-requests.index', $project) }}">Review Partnership Interests</a>
     @endif
 
     <hr>

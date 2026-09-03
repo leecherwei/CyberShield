@@ -27,7 +27,7 @@ class Project extends Model
         'location',
         'status',
         'organisation_id',
-        'created by'
+        'created_by'
     ];
 
     protected $cast = [
@@ -65,6 +65,11 @@ class Project extends Model
     public function partnershipRequests()
     {
         return $this->hasMany(PartnershipRequest::class);
+    }
+
+    public function partnerships()
+    {
+        return $this->hasMany(Partnership::class);
     }
     
 }

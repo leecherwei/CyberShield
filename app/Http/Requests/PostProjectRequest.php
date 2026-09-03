@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Https\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * PostProjectRequest

@@ -4,6 +4,20 @@
 <div class="container">
     <h1>Browse Partnership Projects</h1>
 
+    @if (session('success'))
+        <p>{{ session('success') }}</p>
+    @endif
+
+    @if ($errors->any())
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
+
+    <a href="{{ route('projects.create') }}">Post a New Project</a>
+
     {{-- Search & filter form: industry, location, per leader's spec.
          SDG filter removed — platform targets SDG 17 exclusively, so
          every project is implicitly SDG 17. --}}

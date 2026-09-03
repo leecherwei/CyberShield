@@ -2,7 +2,7 @@
 
 namespace App\Factories;
 
-use App\Modles\Project;
+use App\Models\Project;
 
 /**
  * Concrete Subject in Observer pattern for the project & partnership

@@ -42,6 +42,11 @@ class Organisation extends Model
         return $this->hasMany(PartnershipRequest::class); // Organisation 1 -> PartnershipRequest 1..*
     }
 
+    public function partnerships()
+    {
+        return $this->hasMany(Partnership::class);
+    }
+
     public function partnershipsRequests()
     {
         return $this->hasMany(PartnershipRequest::class); // Organisation 1 -> Partnership 1..*
@@ -52,10 +57,10 @@ class Organisation extends Model
         return $this->hasMany(Notification::class); // Organisation 1 -> Notification 1..*
     }
 
-    /*
+
     public function verifications()
     {
         return $this->hasMany(OrganisationVerification::class);
-    }  */
+    }  
         
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrganisationVerificationController;
 use App\Http\Controllers\ProjectPostingController;
+use App\Http\Controllers\PartnershipRequestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
  
     Route::patch('/projects/{project}/status', [ProjectPostingController::class, 'updateStatus'])
         ->name('projects.updateStatus');
+
+    Route::post('/partnership-requests', [PartnershipRequestController::class, 'store'])
+        ->name('partnership-requests.store');
+
+    Route::get('/projects/{project}/partnership-requests', [PartnershipRequestController::class, 'index'])
+        ->name('partnership-requests.index');
+
+    Route::patch('/partnership-requests/{partnershipRequest}/accept', [PartnershipRequestController::class, 'accept'])
+        ->name('partnership-requests.accept');
+
+    Route::patch('/partnership-requests/{partnershipRequest}/reject', [PartnershipRequestController::class, 'reject'])
+        ->name('partnership-requests.reject');
 
 });
 

@@ -35,7 +35,7 @@ class PartnershipRequest extends Model
      */
     public function project()
     {
-        return $this->belongTo(Project::class);
+        return $this->belongsTo(Project::class);
     }
 
     /**

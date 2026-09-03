@@ -32,8 +32,17 @@ class ProjectPostingController extends Controller
     {
        $projects = $this->securityManager->handleMitigationTwo('search_projects', [
             'keyword'         => $request->input('keyword', ''),
+            'industry'        => $request->input('industry', ''),
+            'location'        => $request->input('location', ''),
             'organisation_id' => (int) $request->input('organisation_id', Auth::user()->organisation_id),
         ]);
+
+        // handleMitigationTwo returns false if the query failed (caught
+        // QueryException) — fall back to an empty collection so the view
+        // doesn't crash trying to iterate over a boolean.
+        if ($projects === false) {
+            $projects = collect();
+        }
 
         return view('projects.index', compact('projects'));
     }
