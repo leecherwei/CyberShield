@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostProjectRequest;
+use App\Models\Organisation;
 use App\Models\Project;
 use App\Services\SecurityManagerService;
 use Illuminate\Http\Request;
@@ -25,16 +26,18 @@ class ProjectPostingController extends Controller
 
     /**
      * Gets/project
-     * Listing/search page - supports filtering by industry and location as specific
+    * Listing/search page - supports filtering by organisation, status,
+    * industry, and location.
      */
 
     public function index(Request $request)
     {
        $projects = $this->securityManager->handleMitigationTwo('search_projects', [
             'keyword'         => $request->input('keyword', ''),
+            'status'          => $request->input('status', ''),
             'industry'        => $request->input('industry', ''),
             'location'        => $request->input('location', ''),
-            'organisation_id' => (int) $request->input('organisation_id', Auth::user()->organisation_id),
+            'organisation_id' => $request->input('organisation_id'),
         ]);
 
         // handleMitigationTwo returns false if the query failed (caught
@@ -44,7 +47,9 @@ class ProjectPostingController extends Controller
             $projects = collect();
         }
 
-        return view('projects.index', compact('projects'));
+        $organisations = Organisation::query()->orderBy('name')->get(['id', 'name']);
+
+        return view('projects.index', compact('projects', 'organisations'));
     }
 
     /**
@@ -123,6 +128,8 @@ class ProjectPostingController extends Controller
         $project->update([
             'title'        => $this->securityManager->sanitizeInput($validated['title']),
             'description'  => $this->securityManager->sanitizeInput($validated['description']),
+            'industry'     => $validated['industry'] ?? null,
+            'location'     => $validated['location'] ?? null,
         ]);
  
         return redirect()->route('projects.index')

@@ -162,13 +162,18 @@ class SecurityManagerService
 
                 return Project::query()
                         ->where('title', 'like', '%' . $safeKeyword . '%')
+                        ->when(in_array($data['status'] ?? '', ['draft', 'published', 'closed', 'archived'], true), fn ($query) =>
+                            $query->where('status', $data['status'])
+                        )
                         ->when($data['industry'] ?? '', fn ($query, $industry) =>
                             $query->where('industry', $industry)
                         )
                         ->when($data['location'] ?? '', fn ($query, $location) =>
                             $query->where('location', 'like', '%' . $this->escapeLikeWildcards($location) . '%')
                         )
-                        ->where('organisation_id', '=', (int) $data['organisation_id'])
+                        ->when($data['organisation_id'] ?? '', fn ($query, $organisationId) =>
+                            $query->where('organisation_id', (int) $organisationId)
+                        )
                         ->orderByDesc('created_at')
                         ->get();
 
